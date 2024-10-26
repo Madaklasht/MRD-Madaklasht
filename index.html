@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madaklasht Fast Delivery</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            background-color: white;
+            padding: 10px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            animation: fadeInDown 1s;
+        }
+
+        section {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Notice Styles */
+        .notice {
+            background-color: #ffeb3b;
+            color: #333;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeInLeft 1s;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            cursor: pointer;
+        }
+
+        /* Delete Button Style */
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* Customer Support Button Style */
+        .support-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #005cbf;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Icon for Sidebar -->
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" class="close">&times;</span>
+            <h2>WEB OWNER Login</h2>
+            <input type="password" id="adminPassword" placeholder="Enter Password">
+            <button onclick="adminLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <header>
+        <h1>Madaklasht Rapid Delivery [MRD]</h1>
+        <p>Your time is precious! Our mission is to deliver your essentials swiftly and reliably.</p>
+    </header>
+
+    <!-- Notice for Customer Support -->
+    <div class="notice">
+        Need assistance? Our customer support <strong>03431367741</strong> chat with us on WhatsApp!
+    </div>
+
+    <!-- Product Order Form -->
+    <section id="orderSection">
+        <h2>Order Now</h2>
+        <form id="orderForm">
+            <input type="text" id="orderItem" placeholder="What do you need?" required>
+            <input type="text" id="deliveryAddress" placeholder="Delivery Address" required>
+            <input type="text" id="contactNumber" placeholder="Your Contact Number" required>
+            <button type="submit">Place Order</button>
+        </form>
+    </section>
+
+    <!-- Admin Order Management Section (Visible only for Admin) -->
+    <section id="adminSection" style="display: none;">
+        <h2>Delivery Data</h2>
+        <ul id="deliveryData"></ul>
+    </section>
+
+    <!-- Customer Support Button -->
+    <button class="support-button" onclick="openSupportModal()">?</button>
+
+    <script>
+        // JavaScript Code
+
+        function toggleMenu() {
+            document.getElementById("adminModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("adminModal").style.display = "none";
+        }
+
+        // Admin Login Function
+        function adminLogin() {
+            const password = document.getElementById("adminPassword").value;
+            if (password === "ruhansayed3") {
+                document.getElementById("adminSection").style.display = "block";
+                closeModal();
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+
+        // Save order data in local storage and display it
+        function saveOrder(order) {
+            const orders = JSON.parse(localStorage.getItem("orders")) || [];
+            orders.push(order);
+            localStorage.setItem("orders", JSON.stringify(orders));
+            displayOrder(order);
+        }
+
+        // Display order in the order list
+        function displayOrder(order) {
+            const orderList = document.createElement("li");
+            orderList.textContent = `Item: ${order.item}, Address: ${order.address}, Contact: ${order.contact}`;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add("delete-btn");
+            deleteButton.onclick = function () {
+                deleteOrder(order);
+                orderList.remove();
+            };
+
+            orderList.appendChild(deleteButton);
+            document.getElementById("deliveryData").appendChild(orderList);
+        }
+
+        // Delete order from local storage
+        function deleteOrder(orderToDelete) {
+            const orders = JSON.parse(localStorage.getItem("orders")) || [];
+            const updatedOrders = orders.filter(order => 
+                !(order.item === orderToDelete.item && order.address === orderToDelete.address && order.contact === orderToDelete.contact)
+            );
+            localStorage.setItem("orders", JSON.stringify(updatedOrders));
+        }
+
+        // Load saved orders on page load
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem("orders")) || [];
+            orders.forEach(displayOrder);
+        }
+
+        // Handle form submission
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const item = document.getElementById("orderItem").value;
+            const address = document.getElementById("deliveryAddress").value;
+            const contact = document.getElementById("contactNumber").value;
+
+            const order = { item, address, contact };
+            saveOrder(order);
+
+            // Thank the customer and send order details to WhatsApp
+            alert("Thank you for your order! It has been placed successfully.");
+            const message = `Order Placed:\nItem: ${item}\nAddress: ${address}\nContact: ${contact}`;
+            window.open(`https://wa.me/03431367741?text=${encodeURIComponent(message)}`, "_blank");
+
+            document.getElementById("orderForm").reset();
+        });
+
+        // Load orders when the page loads
+        window.onload = loadOrders;
+    </script>
+</body>
+</html>
